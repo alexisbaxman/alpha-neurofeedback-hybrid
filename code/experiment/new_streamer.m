@@ -1,5 +1,8 @@
 %% new streamer
-% 06.03.2026
+% It streams a raw EEG file (.xdf format). You can choose the specific file
+% (line 19), sampling rate (line 14) and stream name (line 54), among other
+% features. 
+% Author: Alexis Olguin Baxman Date: 06.03.2026
 
 close all; clear; clc; beep off;
 
@@ -24,8 +27,7 @@ files.which = find(contains({files.list.name}, name.file ),1);
 
 disp(['loading session... ', paths.in, '\' ,files.list(files.which).name])
 cd(paths.lib)
-eeglab
-demo = load_xdf([paths.in, '\' ,files.list(files.which).name]);
+demo = loading_xdf([paths.in, '\' ,files.list(files.which).name]);
 
 
 

@@ -1,5 +1,12 @@
 %% online analysis
-% 06.03.2026
+% online analysis script. It requires a running EEG stream, a working
+% EEGLAB, and the Signal Processing Toolbox. You can choose the specific
+% channel (line 32), the EEG stream name (line 39), various ring buffer
+% atributtes (line 43) and filter properties (line 56). Knob.debugging can
+% be used to visualize the process at every ring buffer update, but this
+% will heavily slow down the execution.
+% Author: Alexis Olguin Baxman, Wolf Pink
+% Date: 06.03.2026
 
 close all; clear; clc; beep off;
 
@@ -259,13 +266,13 @@ while true %
     % fake ring buffer
 
     switch true
-        case tdex <= ring.nhb % fill wonder wheel once
-            ring.wheel(tdex) = alpha.state;
+        case tdex <= ring.nhb % fill wonder weight once
+            ring.weight(tdex) = alpha.state;
 
-        case tdex > ring.nhb % run wonder wheel when tdex = ring.nhb+1
-            ring.wheel = [ring.wheel(2:ring.nhb), alpha.state]; % ring buffer structure
-            ring.wheel_final = sum(ring.wheel .* ring.weights); % apply wieghted average
-            alpha.state = ring.wheel_final;
+        case tdex > ring.nhb % run wonder weight when tdex = ring.nhb+1
+            ring.weight = [ring.weight(2:ring.nhb), alpha.state]; % ring buffer structure
+            ring.weight_final = sum(ring.weight .* ring.weights); % apply weighted average
+            alpha.state = ring.weight_final;
     end
 
     %% push out

@@ -1,5 +1,15 @@
 %% experiment control script
-% 06.03.2023
+% Experiment control script. Controls the full experiment, including
+% instructions, task flows, sonification production, participant input and
+% behavioral data logging. It requires the online analysis script to be
+% running and producing AAA values; it creates the stream with the event
+% markers (EM) and sonification values (SONIC). It requires Psychtoolbox
+% (and GStreamer) installed and running. If you modify anything of the
+% online analysis, you should adapt this code (such as line 33). There are
+% many variables that can be edited, such as (line 39) the duration
+% intertrial, time above/below the threshold, or break duration.
+% Author: Alexis Olguin Baxman
+% Date: 06.03.2023
 close all; clear; clc; beep off;
 
 knob.PC = 3; % 1 PC, 2 server, 3 LAB
