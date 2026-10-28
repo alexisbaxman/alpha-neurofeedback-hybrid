@@ -1,19 +1,18 @@
-# Alpha Neurofeedback: Hybrid vs. Intermittent Feedback
+# Effectiveness of Continuous-Intermittent Hybrid Neurofeedback on Alpha Regulation and Discrimination
 
-(Work in progress)
+This repository contains the code and materials required to run the neurofeedback experiment described in [TBD] and reproduce the analyses and figures reported in the manuscript.
 
-This repository contains the code and materials necessary to run the neurofeedback experiment described in [TBD], and to reproduce the analyses and figures reported in the manuscript. Download the repository with its directory structure intact. 
+For the current setup, the repository's directory structure must remain intact and place on the local C: drive. See REQUIREMENTS.md for the required dependencies and setup instructions.
 
 # Contents
-
-* code/experiment: scripts to run the experiment (stimulus presentation, online EEG analysis, sonification).
-* code/analysis: scripts to reproduce the statistical analyses and figures reported in the manuscript.
-* documents: step-by-step instructions for running the experiment (Experiment_Protocol), plus participant materials (information sheet, consent form, questionnaires)
-* stimuli: audio files required to run the experiment.
-* libs: Place the required third-party dependencies here. Most third-party dependencies are not redistributed in this repository and must be obtained and installed separately (see requirements.txt).
+* **code/experiment:** Scripts to run the experiment, including stimulus presentation, online EEG analysis, and sonification. See the directory's README for details about the scripts.
+* **code/analysis:** Scripts to reproduce the analyses and figures reported in the manuscript. See the directory's README for details about the scripts.
+* **documents/**: It includes experiment instructions, the CRED-nf checklist (Ros et al., 2020), participants' instructions, questionnaires and more.
+* **stimuli/**: Audio files required to run the experiment.
+* **libs/**: Libraries and supporting files required by the experiment and analysis scripts. See REQUIREMENTS.md for the full dependency list.
   
 # Data availability
-Raw participant data is not publicly available, as participant consent did not cover public data sharing.
+Raw participant data are not publicly available because participant consent did not cover public data sharing.
 
 # Citation
 If you use this code, please cite: [TBD]
