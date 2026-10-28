@@ -1,13 +1,17 @@
-libs/
-* violin_half.m: essential for Analysis. It creates the violin plots. It is a modified version of violin.m by Hoffmann (2015) for MATLAB 2025.
-* requirements.txt
+**Dependencies**
+This directory should contain the third-party dependencies required to run the neurofeedback experiment and analyze its results. Most third-party dependencies are not redistributed in this repository and must be obtained and installed separately. This folder must be located on the local C: drive.
+
+**General dependencies**
+* **MATLAB R2022b:** The experiment and analysis scripts were developed for MATLAB R2022b.
+* **EEGLAB 2025.0.0:** Required for experiment and analysis scripts. Additionally, requires the **XDF import plugin (version 1.2)**.
+
+**Experiment-specific dependencies**
+* **Lab Straming Layer (liblsl-Matlab)** 
+* **Psychtoolbox 3.0.19:** Requires installation. It also requires separatedly installation of GStreamer.
+* **Purr Data:** It generates the red noise (red_noise.pd). Requires installation.
+* OSC communation files: **send_osc.m** and **netutil-1.0.0.jar**.
 
 
-Dependencies required to run the Experiment and Analysis code:
-* EEGLAB 2025.0.0: essential for Experiment and Analysis. Requires the xdfimport plugin (v1.2).
-* liblsl-Matlab: essential for Experiment and Analysis
-* Psychtoolbox 3.0.19: essential for Experiment. Must be stored at the local disk (C:).
-* GStreamer: essential for Experiment, as a dependency of Psychtoolbox. Requires installation.
-* Purr Data: essential for Experiment. Generates the red noise. Requires installation.
-* send_osc.m & netutil-1.0.0.jar: essential for Experiment. Send sonification values (osc messages) from the Experiment script to the Purr Data patch.
-* standard_1020.elc: essential for Analysis. Contains the electrode location of the MBT cap, available via EEGLAB.
+**Analysis-specific dependencies**
+* **violin_half.m**: Included in this repository. It creates the violin plots. It is a modified version of violin.m by Hoffmann (2015) for MATLAB 2025.
+
