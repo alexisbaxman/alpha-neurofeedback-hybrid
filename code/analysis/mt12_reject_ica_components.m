@@ -53,7 +53,7 @@ subs = readtable([paths.main, '\participants.tsv'], "FileType","text",'Delimiter
 
 
 %% for loop
-for p = 14:15 %1:length(subs.participant_id) % 13
+for p = 1:length(subs.participant_id) % 13
     if strcmp(subs.INCLUDE{p}, 'Yes')
         disp(' ')
         disp(' ')

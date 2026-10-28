@@ -24,7 +24,7 @@ end
 
 
 knob.debugging = 0; % 0 = not debugging
-knob.plot = 0;
+knob.plot = 1;
 minutes = 5; % window of time for the cross-correlation and normalized plot
 knob.raw = 1; % 0 preprocessed ; 1 raw
 knob.weight = 0; % applies weighted average as in the ring buffer
@@ -57,7 +57,7 @@ subs = readtable([paths.main, '\participants.tsv'], "FileType","text",'Delimiter
 VAULT  = cell(1,length(subs.participant_id));
 
 %% for loop
-for p = 1:length(subs.participant_id) % 13
+for p = 1:length(subs.participant_id)
     if strcmp(subs.INCLUDE{p}, 'Yes')
         [ALLEEG EEG CURRENTSET ALLCOM] = eeglab; % i guess it will open every single time
         disp(' ')
@@ -252,7 +252,7 @@ for p = 1:length(subs.participant_id) % 13
             time_counter = time_counter+ring.chunksize(tdex);
 
 
-        end 
+        end
 
         %% end of the ring buffer
         disp('reconstruction done!')
@@ -285,6 +285,7 @@ for p = 1:length(subs.participant_id) % 13
 
 
         %% plotting online and offline output
+        % whole signal
         switch knob.plot
             case 1
                 fig1 = figure;
@@ -356,10 +357,9 @@ for p = 1:length(subs.participant_id) % 13
         %% plot windows of time that we will xcorrelate
         % FIRST 5 MINUTES
         switch knob.plot
-
             case 1 % knob.plot
                 % FIRST 5 MINUTES
-                fig1 = figure;
+                fig2 = figure;
                 switch knob.raw
                     case 0 % preprocssed
                         plot(AAA.timevec(1:duration), normalize(AAA.time_series(1:duration)), 'Color', aes.orange, 'LineWidth', aes.thick	)
@@ -373,7 +373,7 @@ for p = 1:length(subs.participant_id) % 13
                         hold on
                         plot(rAAA.timevec(1:duration), rAAA.time_series(1:duration), 'Color', aes.blue, 'LineWidth', aes.thick	)
                         hold off
-                        title(['First ', num2str(minutes), ' minutes - raw EEG (', subs.participant_id{p},')'], 'Interpreter', 'none', 'Fontsize', 14)
+                        title(['First ', num2str(minutes), ' minutes (Participant ', subs.participant_id{p}(end-1:end),')'], 'Interpreter', 'none', 'Fontsize', 14)
 
                 end
                 subtitle(['Max corr = ', num2str(round(x.max_corr_start, 3)), ' at lag = ', num2str(x.lag_at_max_corr_start), ' samples (', num2str(round(x.max_lag_seconds_start, 2)), ' s)'], 'Interpreter', 'none', 'Fontsize', 15)
@@ -383,14 +383,14 @@ for p = 1:length(subs.participant_id) % 13
                 xlim([AAA.timevec(1), AAA.timevec(duration)])
                 legend('online analysis', 'offline reconstruction', 'Fontsize', 11, 'Location', 'northwest')
 
-                % daniela's chunk
-                set(gca, 'Box', 'off'); % removes the big box
-                %axis square;
+                % format
                 ax = gca;
-                ax.LineWidth = 2;
-                set(ax, 'TickDir', 'out'); % moves the ticks out
-                ax.TickLength = [0.02 0.02]; % makes them thicke
-                ax.Layer = 'top';
+                set(ax,'FontName','Arial','FontSize',14,'LineWidth', 2, ...
+                    'TickDir','out','TickLength',[0.02 0.02],'Box','off','Layer','top');
+                ax.XLabel.FontSize = 15;
+                ax.YLabel.FontSize = 15;
+                ax.Title.FontSize  = 15;
+
                 af = gcf;
                 af.Position = [1 1 670 445]; % for the window undock size
 
@@ -403,12 +403,12 @@ for p = 1:length(subs.participant_id) % 13
                             case 0
                                 savepath = [paths.out, '\xcross_preprocessed_1'];
                         end
-                        print(fig1, [savepath], '-dpng', '-r300');
+                        print(fig2, [savepath], '-dpng', '-r300');
                         %saveas(fig1, savepath)
                 end
 
                 % LAST 5 MINUTES - XCROSS
-                fig2 = figure;
+                fig3 = figure;
                 switch knob.raw
                     case 0 % preprocessed - we normalize to imrpove visibility, for amplitude comparison we don't normalize
                         plot(AAA.timevec(end-duration:end), normalize(AAA.time_series(end-duration:end)), 'Color', aes.orange, 'LineWidth', aes.thick	)
@@ -424,10 +424,10 @@ for p = 1:length(subs.participant_id) % 13
                         plot(rAAA.timevec(end-duration:end), rAAA.time_series(end-duration:end), 'Color', aes.blue, 'LineWidth', aes.thick	)
                         hold off
                         %title(['Normalized last ', num2str(minutes), ' minutes - Max corr = ', num2str(round(x.max_corr_end, 3)), ' at lag = ', num2str(x.lag_at_max_corr_end), ' samples (', num2str(round(x.max_lag_seconds_end,2)), ' s)'], 'Interpreter', 'none', 'Fontsize', 16)
-                        title(['Last ', num2str(minutes), ' minutes - raw EEG (', subs.participant_id{p},')'], 'Interpreter', 'none', 'Fontsize', 14)
-                
+                        title(['Last ', num2str(minutes), ' minutes (Participant ', subs.participant_id{p}(end-1:end),')'], 'Interpreter', 'none', 'Fontsize', 14)
+
                 end
-                
+
                 subtitle(['Max corr = ', num2str(round(x.max_corr_end, 3)), ' at lag = ', num2str(x.lag_at_max_corr_end), ' samples (', num2str(round(x.max_lag_seconds_end,2)), ' s)'], 'Interpreter', 'none', 'Fontsize', 15)
 
                 ylabel('Amplitude (µV)' , 'Fontsize', 13)
@@ -435,14 +435,14 @@ for p = 1:length(subs.participant_id) % 13
                 xlim([AAA.timevec(end-duration), AAA.timevec(end)])
                 % legend('online analysis', 'offline reconstruction', 'Fontsize', 11)
 
-                % daniela's chunk
-                set(gca, 'Box', 'off'); % removes the big box
-                %axis square;
+                % format
                 ax = gca;
-                ax.LineWidth = 2;
-                set(ax, 'TickDir', 'out'); % moves the ticks out
-                ax.TickLength = [0.02 0.02]; % makes them thicke
-                ax.Layer = 'top';
+                set(ax,'FontName','Arial','FontSize',14,'LineWidth', 2, ...
+                    'TickDir','out','TickLength',[0.02 0.02],'Box','off','Layer','top');
+                ax.XLabel.FontSize = 15;
+                ax.YLabel.FontSize = 15;
+                ax.Title.FontSize  = 15;
+
                 af = gcf;
                 af.Position = [1 1 670 445]; % for the window undock size
 
@@ -455,7 +455,7 @@ for p = 1:length(subs.participant_id) % 13
                             case 0
                                 savepath = [paths.out, '\xcross_preprocessed_2'];
                         end
-                        print(fig2, [savepath], '-dpng', '-r300');
+                        print(fig3, [savepath], '-dpng', '-r300');
                         %saveas(fig2, savepath)
                 end
         end % knob plot
@@ -568,7 +568,7 @@ for p = 1:length(subs.participant_id) % 13
         switch knob.plot
             case 1
                 % first 5 mins
-                fig3 = figure;
+                fig4 = figure;
                 plot(AAA.timevec(1:duration), AAA.time_series(1:duration), 'Color', aes.orange, 'LineWidth', aes.thick	)
                 hold on
 
@@ -584,17 +584,17 @@ for p = 1:length(subs.participant_id) % 13
                         subtitle(['amplitude difference = ', num2str(round(VAULT{p}.diff_start.average, 2)),  ' µV (', num2str(round(VAULT{p}.rel_start.average*100, 2))  ,'%)'], 'Interpreter', 'none', 'Fontsize', 15)
                 end
                 ylabel('Amplitude (µV)' , 'Fontsize', 13)
-                %label('Time (s)' , 'Fontsize', 13)
                 xlim([AAA.timevec(1), AAA.timevec(duration)])
                 legend('online analysis', 'offline reconstruction', 'Fontsize', 11, 'Location', 'northwest')
 
-                set(gca, 'Box', 'off'); % removes the big box
-                %axis square;
+                % format
                 ax = gca;
-                ax.LineWidth = 2;
-                set(ax, 'TickDir', 'out'); % moves the ticks out
-                ax.TickLength = [0.02 0.02]; % makes them thicke
-                ax.Layer = 'top';
+                set(ax,'FontName','Arial','FontSize',14,'LineWidth', 2, ...
+                    'TickDir','out','TickLength',[0.02 0.02],'Box','off','Layer','top');
+                ax.XLabel.FontSize = 15;
+                ax.YLabel.FontSize = 15;
+                ax.Title.FontSize  = 15;
+
                 af = gcf;
                 af.Position = [1 1 670 445]; % for the window undock size
 
@@ -602,16 +602,15 @@ for p = 1:length(subs.participant_id) % 13
                     case 0
                         switch knob.raw
                             case 1
-                        savepath = [paths.out, '\amplitude_raw_1'];
+                                savepath = [paths.out, '\amplitude_raw_1'];
                             case 0
                                 savepath = [paths.out, '\amplitude_preprocessed_1'];
                         end
-                        print(fig3, [savepath], '-dpng', '-r300');
-                        %saveas(fig3, savepath)
+                        print(fig4, [savepath], '-dpng', '-r300');
                 end
 
                 % end
-                fig4 = figure;
+                fig5 = figure;
                 plot(AAA.timevec(end-duration:end), AAA.time_series(end-duration:end), 'Color', aes.orange, 'LineWidth', aes.thick	)
                 hold on
                 plot(rAAA.timevec(end-duration:end), rAAA.time_series(end-duration:end), 'Color', aes.blue, 'LineWidth', aes.thick	)
@@ -634,13 +633,14 @@ for p = 1:length(subs.participant_id) % 13
                 xlim([AAA.timevec(end-duration), AAA.timevec(end)])
                 % legend('online analysis', 'offline reconstruction', 'Fontsize', 11)
 
-                set(gca, 'Box', 'off'); % removes the big box
-                %axis square;
+                % format
                 ax = gca;
-                ax.LineWidth = 2;
-                set(ax, 'TickDir', 'out'); % moves the ticks out
-                ax.TickLength = [0.02 0.02]; % makes them thicke
-                ax.Layer = 'top';
+                set(ax,'FontName','Arial','FontSize',14,'LineWidth', 2, ...
+                    'TickDir','out','TickLength',[0.02 0.02],'Box','off','Layer','top');
+                ax.XLabel.FontSize = 15;
+                ax.YLabel.FontSize = 15;
+                ax.Title.FontSize  = 15;
+
                 af = gcf;
                 af.Position = [1 1 670 445]; % for the window undock size
 
@@ -648,12 +648,11 @@ for p = 1:length(subs.participant_id) % 13
                     case 0
                         switch knob.raw
                             case 0
-                        savepath = [paths.out, '\amplitude_preprocessed_2'];
+                                savepath = [paths.out, '\amplitude_preprocessed_2'];
                             case 1
                                 savepath = [paths.out, '\amplitude_raw_2'];
                         end
-                        print(fig4, [savepath], '-dpng', '-r300');
-%                         saveas(fig4, savepath)
+                        print(fig5, [savepath], '-dpng', '-r300');
                 end
         end % knob plot
 
@@ -666,8 +665,8 @@ for p = 1:length(subs.participant_id) % 13
             case 0
                 switch knob.raw
                     case 1
-                cd([paths.out])
-                save('rAAA_raw.mat', 'rAAA', '-v7')
+                        cd([paths.out])
+                        save('rAAA_raw.mat', 'rAAA', '-v7')
                     case 0
                         save('rAAA_preprocessed.mat', 'rAAA', '-v7')
                 end

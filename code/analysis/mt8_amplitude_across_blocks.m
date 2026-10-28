@@ -172,15 +172,13 @@ xticks(1:5)
 xticklabels({'Baseline', 'Block 1', 'Block 2', 'Block 3', 'Block 4'})
 ylabel('Normalized AAA (z-score)')
 
-% daniela's chunk
 ax = gca;
-set(ax, 'Box', 'off'); % removes the big box
-%axis square;
-ax.LineWidth = 2;
-set(ax, 'TickDir', 'out'); % moves the ticks out
-ax.TickLength = [0.02 0.02]; % makes them thicke
-ax.Layer = 'top';
-%ax.Legend.FontSize = 11;
+set(ax,'FontName','Arial','FontSize',14,'LineWidth', 2, ...
+    'TickDir','out','TickLength',[0.02 0.02],'Box','off','Layer','top');
+ax.XLabel.FontSize = 15;
+ax.YLabel.FontSize = 15;
+ax.Title.FontSize  = 15;
+
 af = gcf;
 af.Position = [1 1 800 600]; % for the window undock size
 

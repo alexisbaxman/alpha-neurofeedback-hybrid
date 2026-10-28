@@ -6,7 +6,7 @@
 % Date: 16.10.2026
 
 paths.save = [paths.main, '\derivatives\mt3\', subject, '\'];
-knob.deutsch = 1; % 1 deutsch, 0 english
+knob.deutsch = 0; % 1 deutsch, 0 english
 knob.std = 1; % plot the normalization windows around the threshold
 aes.gold_light = [0.9500    0.8000         0] % for normalization widnows
 
@@ -135,22 +135,21 @@ p.aaa = plot(AAA.timevec(start:end), AAA.time_series(start:end), 'Color', [0, 0,
 hold on
 
 % draw rectangles in steps of 2
-switch knob.rectangles
-    case 1
-        disp('plotting rectangles')
-
-        for i = 1:2:length(MARKER.rect.position)
-            p.rect{end+1} = rectangle('Position', [MARKER.rect.position(i) MARKER.ylim(1) MARKER.rect.position(i+1) - MARKER.rect.position(i) MARKER.ylim(2) + abs(MARKER.ylim(1))], 'FaceColor', [MARKER.rect.color{i}], 'LineStyle', 'none',  'FaceAlpha',0.3,'EdgeColor','none');
-            hold on
-        end
-end
+% switch knob.rectangles
+%     case 1
+%         disp('plotting rectangles')
+%
+%         for i = 1:2:length(MARKER.rect.position)
+%             p.rect{end+1} = rectangle('Position', [MARKER.rect.position(i) MARKER.ylim(1) MARKER.rect.position(i+1) - MARKER.rect.position(i) MARKER.ylim(2) + abs(MARKER.ylim(1))], 'FaceColor', aes.green, 'LineStyle', 'none',  'FaceAlpha',0.3,'EdgeColor','none');
+%             hold on
+%         end
+% end
 
 % draw events xline
 disp('plotting xlines')
 
 for i = 1:length(MARKER.secs)
     % without label
-
 
     p.xline{end+1} = xline(MARKER.secs(i),  MARKER.line.type{i}, ' ', 'Color', MARKER.line.color{i}, 'LabelHorizontalAlignment', MARKER.line.horizontal{i}, 'LineWidth', MARKER.line.width{i}, 'LabelVerticalAlignment', MARKER.line.vertical{i});
 
@@ -164,7 +163,7 @@ end
 % plot the tasks average
 switch knob.task
     case 1
-                    disp('plotting task averages')
+        disp('plotting task averages')
         for i = 1:length(tasks.averages)-1
             switch knob.std % std of the task average
                 case 1
@@ -175,7 +174,7 @@ switch knob.task
                     % fill(shade.x, shade.y, aes.green, 'FaceAlpha', 0.3, 'EdgeColor', 'none');
                     % hold on
             end
-            p.task = plot([tasks.secs(i), tasks.secs(i+1)], [tasks.averages(i), tasks.averages(i)], 'Color', aes.green, 'LineWidth', 2);
+            p.task = plot([tasks.secs(i), tasks.secs(i+1)], [tasks.averages(i), tasks.averages(i)], 'Color', aes.threshold, 'LineWidth', 2);
             hold on
         end
 end
@@ -190,24 +189,24 @@ for i = 1:length(thres.new)-1
             shade.x = [trial.change(i*2 - 1), trial.change(i*2), trial.change(i*2), trial.change(i*2 - 1)];
             shade.y = [thres.new(i)+thres.std(i), thres.new(i)+thres.std(i), thres.new(i)-thres.std(i), thres.new(i)-thres.std(i)];
             % Plot the shaded area
-            fill(shade.x, shade.y, aes.gold_light, 'FaceAlpha', 0.4, 'EdgeColor', 'none');
+            fill(shade.x, shade.y, aes.threshold, 'FaceAlpha', 0.4, 'EdgeColor', 'none');
             hold on
     end
 
-    p.thres = plot([trial.change(i*2 - 1), trial.change(i*2)], [thres.new(i), thres.new(i)], 'Color', aes.gold, 'LineWidth', aes.thickest);
+    p.thres = plot([trial.change(i*2 - 1), trial.change(i*2)], [thres.new(i), thres.new(i)], 'Color', aes.threshold, 'LineWidth', aes.thickest*1.5);
     hold on
     % trial index is created in every up_on, up_off,
     % down_on, down_off, timeout
 
 end
 
-ylabel('Amplitude (µV)', 'FontSize', 20)
+ylabel('AAA (µV)')
 %xlabel('Time (s)', 'FontSize', 13, 'FontWeight', 'bold')
 ylim([MARKER.ylim(1), MARKER.ylim(2)]) % add a bit of space above to fit the manual boxes
 xlim([fragmentNFB(knob.fragmentNFB).timevec(1)-1, fragmentNFB(knob.fragmentNFB).timevec(end)+1])
 
 
-title(['Regulation Task (', subject, ')'], 'interpreter', 'none', 'FontSize', 20)
+title(['Regulation Task (Participant ', subject(end-1:end), ')'], 'interpreter', 'none', 'FontSize', 15)
 
 
 wind.start = find(strcmp([MARKER.line.name], 'regulation task'))+3;
@@ -249,23 +248,23 @@ xlim([fragmentNFB(knob.fragmentNFB).timevec(1)-1, fragmentNFB(knob.fragmentNFB).
 
 switch knob.deutsch
     case 0
-        ylabel('Volume (%)', 'FontSize', 20)
-xlabel('Time (s)', 'FontSize', 16)
-title(['Real-Time Sonification'], 'interpreter', 'none', 'FontSize', 20)
+        ylabel('Volume (%)', 'FontSize', 15)
+        xlabel('Time (s)', 'FontSize', 15)
+        title(['Real-Time Sonification'], 'interpreter', 'none', 'FontSize', 15)
     case 1
-        ylabel('Lautstärke (%)', 'FontSize', 20)
-xlabel('Zeit (s)', 'FontSize', 16)
-        title(['Echtzeit-Sonifikation'], 'interpreter', 'none', 'FontSize', 20)
+        ylabel('Lautstärke (%)', 'FontSize', 15)
+        xlabel('Zeit (s)', 'FontSize', 15)
+        title(['Echtzeit-Sonifikation'], 'interpreter', 'none', 'FontSize', 15)
 end
-        
+
 
 set(ax, 'Box', 'off'); % removes the big box
 set(ax, 'LineWidth', 2); % removes the big box
 set(ax, 'TickDir', 'out'); % moves the ticks out
 set(ax, 'TickLength', [0.02 0.02]); % makes them thicke
-set(ax, 'FontSize', 15); % hopefully will improve the ticks
+set(ax, 'FontSize', 13); % hopefully will improve the ticks
 set(ax, 'Layer', 'top');
-set(fig,'Units','inches','Position',[1 1 9 31]);  % wide aspect (adjust as you like)
+set(fig,'Units','inches','Position',[1 1 9 6]);  % wide aspect (adjust as you like)
 %tiledlayout(fig, 2, 1, 'TileSpacing','compact','Padding','compact');
 
 toc
@@ -287,9 +286,9 @@ clf;
 
 
 % legend building
-p.std_thres = plot(nan, nan, '-', 'Color', aes.gold_light, 'LineWidth',5);
+p.std_thres = plot(nan, nan, '-', 'Color', aes.threshold, 'LineWidth',8);
 hold on
-p.thres = plot(nan, nan, '-', 'Color', aes.gold, 'LineWidth',2);
+p.thres = plot(nan, nan, '-', 'Color', aes.threshold, 'LineWidth',2);
 p.aaa = plot(nan, nan, '-', 'Color', [0, 0, 0], 'LineWidth',2);
 hold on
 p.sonic = plot(nan, nan, '-', 'Color', aes.dark_red, 'LineWidth',2);
@@ -306,32 +305,32 @@ axis off;
 
 switch knob.std
     case 1
-         switch knob.deutsch
+        switch knob.deutsch
             case 0
-legend([p.aaa, p.thres, p.sonic, p.std_thres], ...
-    {'AAA', 'Dynamic Thresholds', 'Sonification Volume', 'Normalization Interval'} ...
-    , 'Orientation', 'vertical', 'FontSize', 17, 'NumColumns', 2);
-   set(figLegend, 'Units','inches', 'Position',[1 1 15 3]);  % width x height in inches
-             case 1
-                 legend([p.aaa, p.thres, p.sonic, p.std_thres], ...
-    {'AAA', 'Schwellenwert', 'Sonifikation Lautstärke', 'Skalierungsbereich'} ...
-    , 'Orientation', 'vertical', 'FontSize', 17, 'NumColumns', 2);
-   set(figLegend, 'Units','inches', 'Position',[1 1 15 3]);  % width x height in inches
+                legend([p.aaa, p.thres, p.sonic, p.std_thres], ...
+                    {'AAA', 'Dynamic Thresholds', 'Sonification Volume', 'Normalization Interval'} ...
+                    , 'Orientation', 'vertical', 'FontSize', 17, 'NumColumns', 2);
+                set(figLegend, 'Units','inches', 'Position',[1 1 15 3]);  % width x height in inches
+            case 1
+                legend([p.aaa, p.thres, p.sonic, p.std_thres], ...
+                    {'AAA', 'Schwellenwert', 'Sonifikation Lautstärke', 'Skalierungsbereich'} ...
+                    , 'Orientation', 'vertical', 'FontSize', 17, 'NumColumns', 2);
+                set(figLegend, 'Units','inches', 'Position',[1 1 15 3]);  % width x height in inches
 
-         end % knob deutsch
+        end % knob deutsch
     case 0
         switch knob.deutsch
             case 0
-   legend([p.aaa, p.thres, p.sonic], ...
-    {'AAA', 'Schwellenwert', 'Sonifikation Lautstärke'} ...
-    , 'Orientation', 'vertical', 'FontSize', 17, 'NumColumns', 1); 
+                legend([p.aaa, p.thres, p.sonic], ...
+                    {'AAA', 'Schwellenwert', 'Sonifikation Lautstärke'} ...
+                    , 'Orientation', 'vertical', 'FontSize', 17, 'NumColumns', 1);
             case 1
-                   legend([p.aaa, p.thres, p.sonic], ...
-    {'AAA', 'Schwellenwert', 'Sonifikation Lautstärke'} ...
-    , 'Orientation', 'vertical', 'FontSize', 17, 'NumColumns', 3); 
+                legend([p.aaa, p.thres, p.sonic], ...
+                    {'AAA', 'Schwellenwert', 'Sonifikation Lautstärke'} ...
+                    , 'Orientation', 'vertical', 'FontSize', 17, 'NumColumns', 3);
         end
 
-   set(figLegend, 'Units','inches', 'Position',[1 1 12 8]);  % width x height in inches
+        set(figLegend, 'Units','inches', 'Position',[1 1 12 8]);  % width x height in inches
 
 end
 

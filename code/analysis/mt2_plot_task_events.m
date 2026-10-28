@@ -16,14 +16,13 @@ end
 
 knob.window = 3; % 2 regulation task; 3 discrimination task
 knob.plot = 1; % runs script without plotting
-
 knob.std = 0; % plot with standard deviations (if discrimination plot, it becomes 0)
 knob.refractory = 0; % plots refractory window, it's necessary for sonification plot
 knob.save = 1; % save figure
 knob.rectangles = 0; % let's de activate the rectangles
 knob.horizontal = 1; % to plot as well the tasks and thresholds
-knob.change = 0; % show or not the grey perpendicular lines showing the change of direction, interacts with know.first
-knob.deutsch = 1; % 1 deutsch, 0 english
+knob.change = 1; % show or not the grey perpendicular lines showing the change of direction, interacts with know.first
+knob.deutsch = 0; % 1 deutsch, 0 english
 
 % if you don't want to show a trigger, change the color to 'none',
 % if you skip a trigger, it can't be plotted
@@ -40,7 +39,7 @@ switch knob.window
         knob.std = 0; % plot without standard deviations
         knob.trial = 0; % plot trials blue lines
         knob.thres = 1; % plot thrsholds
-        knob.task = 0; % plot task averages
+        knob.task = 1; % plot task averages
         knob.baseline_average = 0; % plots eyes closed baseline average throught the whole session as a brown horizontal line
         knob.correct = 1; % plot vertical line with correct and uncorrect answers
         % too much, unnecessary, too many elements
@@ -58,8 +57,8 @@ aes.thin = 0.5;
 aes.thick = 1.5;
 aes.thickest = 2;
 aes.boost = 1.8;
-aes.purple = [0.4940 0.1840 0.5560]	; % purple; upreg
-aes.green = [0.4660 0.6740 0.1880]; % green, doreg
+aes.purple = [0.80 0.47 0.65]; % purple; upreg
+aes.green = [0.4667    0.6745    0.1882]; % green, thresholds
 aes.black = [0 0 0]; % black
 aes.blue = [0.1843    0.7451    0.9373]; % light blue
 aes.violet = [0.4940 0.1840 0.5560]; % soft violet
@@ -69,6 +68,7 @@ aes.pink = [1 0.8 0.85]; % pale pink
 aes.brown = [0.42, 0.38, 0.22]; % brown with a slight greenish hue
 aes.red = [0.8392    0.0078    0.0078];
 aes.orange = [1.0000    0.4118    0.1608];
+aes.threshold = aes.green; % you choose the color for the thresholds here
 
 %% let's realocate
 MARKER.idx = []; % index in the APS
@@ -892,15 +892,15 @@ switch knob.plot
 
         end
 
-        ylabel('Amplitude (µV)', 'FontSize', 20)
+        ylabel('Absolute Alpha Amplitude (µV)', 'FontSize', 20)
         switch knob.deutsch
             case 0
-        xlabel('Time (s)', 'FontSize', 16)
+        xlabel('Time (s)', 'FontSize', 20)
             case 1
                         xlabel('Zeit (s)', 'FontSize', 20)
         end
 
-        ylim([MARKER.ylim(1), MARKER.ylim(2)])
+        ylim([MARKER.ylim(1), MARKER.ylim(2)-2])
         xlim([AAA.timevec(start) AAA.timevec(end)]) % not actually used
         %title(['recorded Alpha Amplitude Stream and all ', num2str(MARKER.trial.counter), ' trials'])
 
@@ -968,11 +968,11 @@ switch knob.plot
                                     shade.x = [trial.change(i*2 - 1), trial.change(i*2), trial.change(i*2), trial.change(i*2 - 1)];
                                     shade.y = [thres.new(i)+thres.std(i), thres.new(i)+thres.std(i), thres.new(i)-thres.std(i), thres.new(i)-thres.std(i)];
                                     % Plot the shaded area
-                                    fill(shade.x, shade.y, aes.gold, 'FaceAlpha', 0.4, 'EdgeColor', 'none');
+                                    fill(shade.x, shade.y, aes.threshold, 'FaceAlpha', 0.4, 'EdgeColor', 'none');
                                     hold on
                             end
 
-                            p.thres = plot([trial.change(i*2 - 1), trial.change(i*2)], [thres.new(i), thres.new(i)], 'Color', aes.gold, 'LineWidth', aes.thickest);
+                            p.thres = plot([trial.change(i*2 - 1), trial.change(i*2)], [thres.new(i), thres.new(i)], 'Color', aes.threshold, 'LineWidth', aes.thickest*1.5);
                             hold on
                             % trial index is created in every up_on, up_off,
                             % down_on, down_off, timeout
@@ -1022,7 +1022,7 @@ switch knob.plot
                 xlim([MARKER.secs(wind.start(1)) MARKER.secs(wind.end(1)+2)])
 
             case 2 % reg task
-                title(['Regulation Task (', subject, ')'], 'interpreter', 'none', 'FontSize', 17)
+                title(['Regulation Task (Participant ', subject(end-1:end), ')'], 'interpreter', 'none')
 
                 paths.fig = [subject, '_reg_task.png'];
 
@@ -1032,37 +1032,28 @@ switch knob.plot
                 xlim([MARKER.secs(wind.start(2)) MARKER.secs(wind.end(2))])
                 % 1 & 1 for reg task-1
                 % 2 & 2 for reg task-2
-                switch knob.correct
-                    case 1
-                        %                         legend([p.aaa, p.task, p.trial, p.thres, p.upreg, p.downreg, p.timeout], ...
-                        %                             {'AAA', 'task average', 'trial average', 'threshold value','increase trial (shade)', 'decrease trial (shade)', 'timeout trial'} ...
-                        %                             , 'Location', 'best', 'FontSize', 14);
-
-                        %                         legend([p.aaa, p.thres, p.rect_correct, p.rec_incorrect], ...
-                        %                             {'AAA', 'Dynamic threshold','Correct answer', 'Incorrect answer'} ...
-                        %                             , 'Location', 'best', 'FontSize', 14);
-                    case 0
-                        legend([p.aaa, p.task, p.thres, p.upreg, p.downreg], ...
-                            {'AAA', 'task average', 'threshold value','increase trial (shade)', 'decrease trial (shade)'} ...
-                            , 'Location', 'best', 'FontSize', 14);
-                end
+               
+                lgd = legend([p.aaa, p.task, p.thres, p.upreg, p.downreg], ...
+                    {'AAA', 'task average', 'threshold value','increase trial (shade)', 'decrease trial (shade)'} ...
+                    , 'Location', 'North', 'FontSize', 15);
                 
             % switch knob window
             case 3 % discrimination task
-                title(['Discrimination Task (', subject, ')'], 'interpreter', 'none', 'FontSize', 17)
+                title(['Discrimination Task (Participant ', subject(end-1:end), ')'], 'interpreter', 'none')
+
 
                 paths.fig = [subject, '_disc_task.png'];
 
                 wind.start = find(strcmp([MARKER.line.name], 'discrimination task'))+2;
                 wind.end = find(strcmp([MARKER.line.name], 'regulation task'))+2; % the 6th discrimination task
 
-                xlim([MARKER.secs(wind.start(1)) MARKER.secs(wind.end(2))])
+                xlim([MARKER.secs(wind.start(1)+1) MARKER.secs(wind.end(2)-3)])
                 % 1 & 2 for disc task-1
 
                 % recalculate lims
         MARKER.ylim = [min(AAA.time_series(wind.start(1):wind.end(2))), max(AAA.time_series(wind.start(1):wind.end(2)))];
 
-        ylim([MARKER.ylim(1), MARKER.ylim(2)])
+        ylim([MARKER.ylim(1), MARKER.ylim(2)-1])
         
         %hardcode
                 ylim([MARKER.ylim(1), 25])
@@ -1080,22 +1071,25 @@ switch knob.plot
                         switch knob.deutsch
                             case 0
                         
-                        legend([p.aaa, p.rect_task, p.thres, p.rect_correct, p.rect_incorrect], ...
+                        lgd = legend([p.aaa, p.rect_task, p.thres, p.rect_correct, p.rect_incorrect], ...
                             {'AAA', 'Mean task AAA' ,'Dynamic threshold','Correct answer', 'Incorrect answer'} ...
-                            , 'Location', 'best', 'FontSize', 14);
+                            , 'Location', 'best','NumColumns',2, 'FontSize', 15);
+
+
                             case 1
-                                legend([p.aaa, p.thres, p.rect_correct, p.rect_incorrect], ...
+                                lgd = legend([p.aaa, p.thres, p.rect_correct, p.rect_incorrect], ...
                             {'AAA', 'Schwellenwert','Richtige Antwort', 'Falsche Antwort'} ...
-                            , 'Location', 'southoutside', 'FontSize', 17, 'NumColumns', 2);
+                            , 'Location', 'southoutside', 'FontSize', 15, 'NumColumns', 2);
+
 
                                    
                         end % knob.deutsch
 
-                    case 0
+                    case 0 % knob.correct, still discrimination
 
-                        legend([p.aaa, p.task, p.thres, p.rect_disc], ...
+                        lgd = legend([p.aaa, p.task, p.thres, p.rect_disc], ...
                             {'AAA', 'task average', 'threshold value','discrimination trial (shade)'} ...
-                            , 'Location', 'best', 'FontSize', 20);
+                            , 'Location', 'best', 'FontSize', 15);
                 end
 
         end
@@ -1107,14 +1101,17 @@ switch knob.plot
         set(ax, 'TickDir', 'out'); % moves the ticks out
         ax.TickLength = [0.02 0.02]; % makes them thicke
         ax.Layer = 'top';
-        set(ax, 'FontSize', 15); % hopefully will improve the ticks
-        ti = ax.TightInset;
-        ax.Position = [ti(1) ti(2) 1 - ti(1) - ti(3) 1 - ti(2) - ti(4)];
+        set(ax, 'FontSize', 13); % hopefully will improve the ticks
+%         ti = ax.TightInset;
+%         ax.Position = [ti(1) ti(2) 1 - ti(1) - ti(3) 1 - ti(2) - ti(4)];
+        set(ax,'FontName','Arial','FontSize',9);
+        ax.Title.FontSize  = 15;
+        ax.XLabel.FontSize = 15;
+        ax.YLabel.FontSize = 15;
+
 
         af = gcf;
-        set(af,'Units','inches','Position',[1 1 9 5]);  % wide aspect (adjust as you like)
-
-        %                    af.Position = [1 1 1100 600]; % for the window undock size
+        set(af,'Units','inches','Position',[1 1 9 6]); 
 
 
 

@@ -43,7 +43,7 @@ subs = readtable([paths.main, '\participants.tsv'], "FileType","text",'Delimiter
 
 
 %% for loop
-for p = 14:15 %1:length(subs.participant_id) % 13
+for p = 1:length(subs.participant_id) 
     if strcmp(subs.INCLUDE{p}, 'Yes')
         disp(' ')
         disp(' ')
@@ -193,44 +193,6 @@ for p = 14:15 %1:length(subs.participant_id) % 13
 
         EEG = pop_saveset(EEG, [subs.participant_id{p},'_pre_ica.set'], paths.out);
 
-
-        %% Remove bad components: Linn
-        %     art.eye = [];
-        %     art.muscle = [];
-        %     art.heart = [];
-        %     art.line_noise = [];
-        %     art.channel_noise = [];
-        %     art.other = [];
-        %     for c = 1:size(EEG.data, 1)
-        %         % Check if the component is classified as an artifact
-        %         if find(EEG.etc.ic_classification.ICLabel.classifications(c,:) > 0.5)
-        %             % Get the label for the artifactual component
-        %             d = find(EEG.etc.ic_classification.ICLabel.classifications(c,:) > 0.5);
-        %             label = EEG.etc.ic_classification.ICLabel.classes{d};
-        %
-        %             % Add the component to the appropriate artifactual component list
-        %             switch label
-        %                 case 'Eye'
-        %                     art.eye(end+1) = c;
-        %                 case 'Muscle'
-        %                     art.muscle(end+1) = c;
-        %                 case 'Heart'
-        %                     art.heart(end+1) = c;
-        %                 case 'Line Noise'
-        %                     art.line_noise(end+1) = c;
-        %                 case 'Channel Noise'
-        %                     art.channel_noise(end+1) = c;
-        %                 case 'Other'
-        %                     art.other(end+1) = c;
-        %             end
-        %         end
-        %     end
-        %
-        %     % Concatenate the artifactual components from this participant with the badcomps field
-        %     EEG.badcomps = [art.eye, art.muscle, art.heart, art.line_noise, art.channel_noise, art.other];
-        %     allbadcomps(p).subject=EEG.badcomps; % store all participants for... fun?
-        %     % remove selected components from dataset
-        %     EEG = pop_subcomp(EEG, [EEG.badcomps], 0);
 
         disp(' ')
         disp(' ')

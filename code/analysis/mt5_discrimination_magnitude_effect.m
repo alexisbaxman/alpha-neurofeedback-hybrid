@@ -269,7 +269,7 @@ for p = 1:length(hyp3)
         b.FaceColor = 'flat';
         b.CData(:,:) = repmat(aes.dark_blue, numel(bins.acc(p,:)), 1);
 
-        title([num2str(hyp3(p).id{1}), ' (r: ', num2str(hyp3(p).r), ')'], 'Interpreter','none')
+        title(['Participant ', num2str(hyp3(p).id{1}(end-1:end)), ' (r: ', num2str(hyp3(p).r), ')'], 'Interpreter','none')
 
         xlabel('Percentiles');
         ylabel('Percent Correct');
@@ -277,7 +277,16 @@ for p = 1:length(hyp3)
         xticklabels({'pct10','pct20','pct30','pct40','pct50','pct60','pct70','pct80','pct90','pct100'});
         ylim([0 1]);
 
+        ax = gca;
+        set(ax,'FontName','Arial','FontSize',14,'LineWidth',1, ...
+            'TickDir','out','TickLength',[0.01 0.01],'Box','off','Layer','top');
+        ax.XLabel.FontSize = 15;
+        ax.YLabel.FontSize = 15;
+        ax.Title.FontSize  = 15;
+
+
         paths.save = fullfile(paths.derivatives, hyp3(p).id{1});
+
 
         if exist(paths.save) == 0
             mkdir(paths.save)

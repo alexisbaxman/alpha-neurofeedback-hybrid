@@ -220,34 +220,22 @@ end
 
 
 %% plot paremeters
-        ax = gca;              % or your specific axes handle (ax1, ax2, …)
-        ax.FontSize = 12;
-        ax.LineWidth  = 2;        % thicker axis lines / tick marks
-        ax.TickLength = [0.02 0.02]; % makes them thicke
-        ax.Layer = 'top';
-        ti = ax.TightInset;
-        ax.Position = [ti(1) ti(2) 1 - ti(1) - ti(3) 1 - ti(2) - ti(4)];
+af = gcf;  ax = gca;
+set(af,'Units','inches','Position',[1 1 7 4],'Color','w');   % final print size
 
-        af = gcf;
+set(ax,'Units','normalized','FontName','Arial','FontSize',10,'LineWidth',1, ...
+       'TickDir','out','TickLength',[0.01 0.01],'Box','off','Layer','top');
 
-        set(ax, 'Box', 'off'); % removes the big box
-        set(ax, 'TickDir', 'out'); % moves the ticks out
-        set(af,'Units','inches','Position',[1 1 16 10]);  % wide aspect
+xlabel(ax,'Time (s)','FontSize',14);
+ylabel(ax,'AAA (\muV)','FontSize',14);
+title(['Percentage difference: ', num2str(round(T.diffNorm(counter), 3)) ,'% (Participant ',T.participant{counter}(end-1:end),')'], 'Interpreter', 'none', 'Fontsize', 17, 'FontName', 'Arial');
 
+xlim(ax,[timevec(1) timevec(end)]);
 
-        xlabel('Time (s)', 'Fontsize', 17);
-        ylabel('AAA (\muV)', 'Fontsize', 17);
-        title(['Percentage difference: ', num2str(round(T.diffNorm(counter), 3)) ,'% (',T.participant{counter},')'], 'Interpreter', 'none', 'Fontsize', 19, 'FontName', 'Arial');
-        %title(sprintf('Baseline %s', participantLabel, ' (', diffNorm(p),'%)'), 'Interpreter', 'none', 'Fontsize', 15);
-        %grid on;
-        
-        %ax.TickLength = [0.015 0.015];
-        %ax.TickDir    = 'out';      % or 'in'
-        hold off;
-        xlim([timevec(1) timevec(end)])
-%         legend([pl.aaa, pl.ins(1), pl.open(1), pl.close(1)], ...
-%             {'AAA', 'Voice Instructions', 'Eyes-Open', 'Eyes-Closed'}, ...
-%             'FontSize', 13, 'Location', 'eastoutside')
+drawnow                                  % let MATLAB compute the label space
+ti = ax.TightInset;
+ax.Position = [ti(1)+0.01, ti(2)+0.01, 1-ti(1)-ti(3)-0.02, 1-ti(2)-ti(4)-0.02];
+hold off;
 
         %% save figure
         paths.save = [paths.derivatives,'\' ,T.participant{counter}];
